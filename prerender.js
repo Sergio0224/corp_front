@@ -25,9 +25,7 @@ prerenderer.initialize()
   .then(() => prerenderer.renderRoutes(rutas))
   .then(renderedRoutes => {
     renderedRoutes.forEach(route => {
-      // Modifica el manejo de rutas para asegurar una estructura consistente
-      const routePath = route.route === '/' ? 'index' : route.route.slice(1);
-      const outputDir = path.join(dirname, outputFolder, routePath);
+      const outputDir = path.join(dirname, outputFolder, route.route.slice(1) || 'index');
       const outputFile = path.join(outputDir, 'index.html');
 
       if (!fs.existsSync(outputDir)) {
@@ -36,15 +34,6 @@ prerenderer.initialize()
 
       fs.writeFileSync(outputFile, route.html);
     });
-
-    // Asegúrate de tener un index.html en la raíz
-    const rootIndexPath = path.join(dirname, outputFolder, 'index.html');
-    if (!fs.existsSync(rootIndexPath)) {
-      const firstRouteIndexPath = path.join(dirname, outputFolder, 'index', 'index.html');
-      if (fs.existsSync(firstRouteIndexPath)) {
-        fs.copyFileSync(firstRouteIndexPath, rootIndexPath);
-      }
-    }
   })
   .then(() => prerenderer.destroy())
   .catch(err => {

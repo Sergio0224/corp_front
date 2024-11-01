@@ -9,7 +9,7 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "prerender": "node prerender.js",
-    "netlify": "npm run build && node prerender.js && cp src/_redirects dist/_redirects"
+    "netlify": "npm run build && npm run prerender"
   },
   "dependencies": {
     "@emotion/react": "^11.13.3",
