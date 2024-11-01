@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import { Mail, Phone, MapPin, Facebook, Twitter } from "lucide-react";
 import { Fade } from "react-awesome-reveal";
+import emailjs from '@emailjs/browser';
 
 const ContactPage = () => {
+
     const [formData, setFormData] = useState({
         name: "",
         email: "",
@@ -10,10 +12,55 @@ const ContactPage = () => {
         message: ""
     });
 
-    const handleSubmit = (e) => {
+    const [status, setStatus] = useState({
+        submitting: false,
+        success: false,
+        error: null
+    });
+
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        // Handle form submission logic here
-        console.log("Form submitted:", formData);
+        setStatus({ submitting: true, success: false, error: null });
+
+        try {
+            // Configura los parámetros para EmailJS
+            const templateParams = {
+                from_name: formData.name,
+                from_email: formData.email,
+                to_name: "CORDIPRODDHH",
+                to_email: "contacto@cordiproddhh.com",
+                subject: formData.subject,
+                message: formData.message,
+            };
+
+            await emailjs.send(
+                'service_w4xcmod', // Reemplaza con tu Service ID de EmailJS
+                'template_n2kxhtd', // Reemplaza con tu Template ID de EmailJS
+                templateParams,
+                'hYiOkM6l85vxt1b_c' // Reemplaza con tu Public Key de EmailJS
+            );
+
+            setStatus({
+                submitting: false,
+                success: true,
+                error: null
+            });
+
+            // Limpiar el formulario después del envío exitoso
+            setFormData({
+                name: "",
+                email: "",
+                subject: "",
+                message: ""
+            });
+
+        } catch (error) {
+            setStatus({
+                submitting: false,
+                success: false,
+                error: 'Hubo un error al enviar el mensaje. Por favor, intente nuevamente.'
+            });
+        }
     };
 
     const handleChange = (e) => {
@@ -112,6 +159,19 @@ const ContactPage = () => {
                         <Fade direction='up' triggerOnce>
                             <div className="bg-white rounded-xl p-8 shadow-lg">
                                 <h3 className="text-2xl font-bold text-orange-500 mb-6">Envíanos un mensaje</h3>
+
+                                {status.success && (
+                                    <div className="mb-6 p-4 bg-green-100 text-green-700 rounded-lg">
+                                        ¡Mensaje enviado con éxito! Nos pondremos en contacto pronto.
+                                    </div>
+                                )}
+
+                                {status.error && (
+                                    <div className="mb-6 p-4 bg-red-100 text-red-700 rounded-lg">
+                                        {status.error}
+                                    </div>
+                                )}
+
                                 <form onSubmit={handleSubmit} className="space-y-6">
                                     <div>
                                         <label htmlFor="name" className="block text-gray-700 font-medium mb-2">
@@ -175,9 +235,12 @@ const ContactPage = () => {
 
                                     <button
                                         type="submit"
-                                        className="w-full bg-orange-500 text-white px-6 py-3 rounded-full font-medium hover:bg-orange-600 transition-colors"
+                                        disabled={status.submitting}
+                                        className={`w-full bg-orange-500 text-white px-6 py-3 rounded-full font-medium 
+                                ${status.submitting ? 'opacity-50 cursor-not-allowed' : 'hover:bg-orange-600'} 
+                                transition-colors`}
                                     >
-                                        Enviar Mensaje
+                                        {status.submitting ? 'Enviando...' : 'Enviar Mensaje'}
                                     </button>
                                 </form>
                             </div>

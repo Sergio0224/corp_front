@@ -12,6 +12,7 @@
     "netlify": "npm run build && npm run prerender"
   },
   "dependencies": {
+    "@emailjs/browser": "^4.4.1",
     "@emotion/react": "^11.13.3",
     "@prerenderer/prerenderer": "^1.2.5",
     "@prerenderer/renderer-puppeteer": "^1.2.4",

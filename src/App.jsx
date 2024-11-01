@@ -9,6 +9,8 @@ import Contact from './pages/Contact';
 import ActivityDetail from './pages/ActivityDetail';
 import Dashboard from './pages/Dashboard';
 import Login from './pages/Login';
+import { init } from '@emailjs/browser';
+init("hYiOkM6l85vxt1b_c");
 
 function App() {
   return (
